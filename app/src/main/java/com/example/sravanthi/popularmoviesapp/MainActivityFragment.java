@@ -1,5 +1,6 @@
 package com.example.sravanthi.popularmoviesapp;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -83,9 +84,16 @@ public class MainActivityFragment extends Fragment {
             String posterJsonStr = null;
 
             try {
-                String baseUrl = "https://api.themoviedb.org/3/discover/movie?";
-                String apiKey = "api_key=" +BuildConfig.THE_MOVIE_DB_API_KEY;
-                URL url = new URL(baseUrl.concat(apiKey));
+                final String POSTER_BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
+                final String APIKEY_PARAM = "api_key";
+
+                Uri builtUri = Uri.parse(POSTER_BASE_URL).buildUpon()
+                        .appendQueryParameter(APIKEY_PARAM,BuildConfig.THE_MOVIE_DB_API_KEY)
+                        .build();
+
+                URL url = new URL(builtUri.toString());
+
+                Log.v(LOG_TAG,"Built URI "+builtUri.toString());
 
                 urlConnection = (HttpURLConnection)url.openConnection();
                 urlConnection.setRequestMethod("GET");
