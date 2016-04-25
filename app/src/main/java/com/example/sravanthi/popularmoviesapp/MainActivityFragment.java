@@ -51,7 +51,7 @@ public class MainActivityFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.refresh)
         {
-            new FetchPosterTask().execute();
+            new FetchPosterTask().execute("posterJsonStr");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -76,25 +76,28 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
-    public class FetchPosterTask extends AsyncTask<String, Void, String>
+    public class FetchPosterTask extends AsyncTask<String, Void, String[]>
     {
         private final String LOG_TAG = FetchPosterTask.class.getSimpleName();
 
-        private String getPosterFromJson(String posterJsonStr) throws JSONException
+        private String[] getPosterFromJson(String posterJsonStr) throws JSONException
         {
             final String MDB_RESULTS = "results";
             final String MDB_POSTER_PATH = "poster_path";
-            String resultStrs = null;
+            String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
             for(int i=0; i<movieArray.length();i++)
             {
                 JSONObject posterPathObject = movieArray.getJSONObject(i);
                 String postersName = posterPathObject.getString(MDB_POSTER_PATH);
-                resultStrs = postersName;
+                resultStrs[i] = postersName;
             }
 
-            Log.v(LOG_TAG,"Posters:"+resultStrs);
+            for(String s : resultStrs)
+            {
+                Log.v(LOG_TAG,"Posters:"+s);
+            }
             return resultStrs;
 
 
@@ -103,7 +106,7 @@ public class MainActivityFragment extends Fragment {
 
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             if (params.length == 0) {
                 return null;
             }
@@ -167,7 +170,10 @@ public class MainActivityFragment extends Fragment {
             }
 
             return null;
+
+
         }
+
 
 
     }
