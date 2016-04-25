@@ -84,9 +84,10 @@ public class MainActivityFragment extends Fragment {
         {
             final String MDB_RESULTS = "results";
             final String MDB_POSTER_PATH = "poster_path";
-            String[] resultStrs = new String[20];
+            //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
+            String[] resultStrs = new String[movieArray.length()];
             for(int i=0; i<movieArray.length();i++)
             {
                 JSONObject posterPathObject = movieArray.getJSONObject(i);
