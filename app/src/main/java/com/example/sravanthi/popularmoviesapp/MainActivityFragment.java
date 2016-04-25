@@ -90,8 +90,8 @@ public class MainActivityFragment extends Fragment {
             for(int i=0; i<movieArray.length();i++)
             {
                 JSONObject posterPathObject = movieArray.getJSONObject(i);
-                String name = posterPathObject.getString(MDB_POSTER_PATH).toString();
-                resultStrs = "posters:" +name;
+                String postersName = posterPathObject.getString(MDB_POSTER_PATH);
+                resultStrs = postersName;
             }
 
             Log.v(LOG_TAG,"Posters:"+resultStrs);
