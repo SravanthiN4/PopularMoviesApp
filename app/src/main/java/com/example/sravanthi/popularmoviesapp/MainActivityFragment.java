@@ -95,7 +95,7 @@ public class MainActivityFragment extends Fragment {
         private ArrayList<PosterImages> getPosterFromJson(String posterJsonStr) throws JSONException
         {
             final String MDB_RESULTS = "results";
-            final String MDB_POSTER_PATH = "poster_path";
+            final String MDB_POSTER_PATH = "http://image.tmdb.org/t/p/w185/"+"poster_path";
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
@@ -106,7 +106,7 @@ public class MainActivityFragment extends Fragment {
                 imagesL.add(new PosterImages(postersName));
             }
 
-            Log.v(LOG_TAG,"Images"+imagesL);
+            Log.v(LOG_TAG,"Images:"+imagesL);
             return imagesL;
 
 
