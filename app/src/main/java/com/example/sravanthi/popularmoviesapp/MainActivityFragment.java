@@ -26,11 +26,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+
+    ArrayList<PosterImages> imagesL = new ArrayList<PosterImages>();
+    ImageAdapter adapter;
 
     public MainActivityFragment() {
     }
@@ -51,10 +55,16 @@ public class MainActivityFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.refresh)
         {
-            new FetchPosterTask().execute("posterJsonStr");
+
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        new FetchPosterTask().execute();
+        super.onStart();
     }
 
     @Override
@@ -63,7 +73,9 @@ public class MainActivityFragment extends Fragment {
 
         View rootView =  inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movie_poster);
-        gridview.setAdapter(new ImageAdapter(getActivity()));
+        adapter = new ImageAdapter(getContext(),R.layout.fragment_main,imagesL);
+
+        gridview.setAdapter(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -76,30 +88,27 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
-    public class FetchPosterTask extends AsyncTask<String, Void, String[]>
+    public class FetchPosterTask extends AsyncTask<String, Void, ArrayList<PosterImages>>
     {
         private final String LOG_TAG = FetchPosterTask.class.getSimpleName();
 
-        private String[] getPosterFromJson(String posterJsonStr) throws JSONException
+        private ArrayList<PosterImages> getPosterFromJson(String posterJsonStr) throws JSONException
         {
             final String MDB_RESULTS = "results";
             final String MDB_POSTER_PATH = "poster_path";
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
-            String[] resultStrs = new String[movieArray.length()];
             for(int i=0; i<movieArray.length();i++)
             {
                 JSONObject posterPathObject = movieArray.getJSONObject(i);
                 String postersName = posterPathObject.getString(MDB_POSTER_PATH);
-                resultStrs[i] = postersName;
+                imagesL.add(new PosterImages(postersName));
             }
 
-            for(String s : resultStrs)
-            {
-                Log.v(LOG_TAG,"Posters:"+s);
-            }
-            return resultStrs;
+            Log.v(LOG_TAG,"Images"+imagesL);
+            return imagesL;
+
 
 
         }
@@ -107,7 +116,7 @@ public class MainActivityFragment extends Fragment {
 
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected ArrayList<PosterImages> doInBackground(String... params) {
             if (params.length == 0) {
                 return null;
             }
@@ -175,7 +184,11 @@ public class MainActivityFragment extends Fragment {
 
         }
 
+        @Override
+        protected void onPostExecute(ArrayList<PosterImages>result) {
 
-
+            adapter.updateData(result);
+            Log.v(LOG_TAG,"Result:"+result);
+        }
     }
 }
