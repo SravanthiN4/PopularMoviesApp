@@ -63,7 +63,7 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onStart() {
-        new FetchPosterTask().execute();
+        new FetchPosterTask().execute("posterJsonStr");
         super.onStart();
     }
 
@@ -72,9 +72,10 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView =  inflater.inflate(R.layout.fragment_main, container, false);
-        GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movie_poster);
-        adapter = new ImageAdapter(getContext(),R.layout.fragment_main,imagesL);
 
+        // Get a reference to the GridView, and attach this adapter to it.
+        GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movie_poster);
+        adapter = new ImageAdapter(getContext(),imagesL);
         gridview.setAdapter(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -95,19 +96,25 @@ public class MainActivityFragment extends Fragment {
         private ArrayList<PosterImages> getPosterFromJson(String posterJsonStr) throws JSONException
         {
             final String MDB_RESULTS = "results";
-            final String MDB_POSTER_PATH = "http://image.tmdb.org/t/p/w185/"+"poster_path";
+            final String MDB_POSTER_PATH = "poster_path";
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
+            Log.v(LOG_TAG,"movieArray"+movieArray.length());
             for(int i=0; i<movieArray.length();i++)
             {
                 JSONObject posterPathObject = movieArray.getJSONObject(i);
-                String postersName = posterPathObject.getString(MDB_POSTER_PATH);
+                Log.v(LOG_TAG,"pPath"+posterPathObject);
+                String postersName =  "http://image.tmdb.org/t/p/w185/"+posterPathObject.getString(MDB_POSTER_PATH);
+                Log.v(LOG_TAG,"pName:"+postersName);
                 imagesL.add(new PosterImages(postersName));
+                Log.v(LOG_TAG,"pImages"+imagesL);
+
             }
 
-            Log.v(LOG_TAG,"Images:"+imagesL);
+            Log.v(LOG_TAG,"imageL"+imagesL);
             return imagesL;
+
 
 
 
@@ -117,8 +124,11 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected ArrayList<PosterImages> doInBackground(String... params) {
+
             if (params.length == 0) {
+                Log.v(LOG_TAG,"error:"+params);
                 return null;
+
             }
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -144,6 +154,7 @@ public class MainActivityFragment extends Fragment {
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
+                    Log.v(LOG_TAG,"iStream:"+inputStream);
                     return null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -153,6 +164,7 @@ public class MainActivityFragment extends Fragment {
                     buffer.append(line + "\n");
                 }
                 if (buffer.length() == 0) {
+                    Log.v(LOG_TAG,"buffer"+buffer);
                     return null;
                 }
                 posterJsonStr = buffer.toString();
@@ -175,13 +187,16 @@ public class MainActivityFragment extends Fragment {
 
             try {
                 return getPosterFromJson(posterJsonStr);
+
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e(LOG_TAG,"Error"+e);
             }
 
-            return null;
 
 
+
+          return null;
         }
 
         @Override
