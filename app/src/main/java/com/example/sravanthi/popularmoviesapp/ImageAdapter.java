@@ -59,6 +59,9 @@ public class ImageAdapter extends ArrayAdapter<PosterImages> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
+
+
+
         // Gets the PosterImage object from the ArrayAdapter at the appropriate position
 
         PosterImages posterImages = getItem(position);
@@ -70,10 +73,12 @@ public class ImageAdapter extends ArrayAdapter<PosterImages> {
         // If not, this view already has the layout inflated from a previous call to getView,
         // and we modify the View widgets as usual.
 
-        if(convertView == null)
-        {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.poster_item,parent,false);
+        if(convertView == null) {
+
+
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.poster_item, parent, false);
         }
+
 
         ImageView posterView = (ImageView)convertView.findViewById(R.id.poster_image);
         Picasso.with(getContext()).load(posterImages.getPoster_path()).into(posterView);

@@ -10,8 +10,8 @@
         android:id="@+id/gridview_movie_poster"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="150dp"
         android:numColumns="auto_fit"
+        android:columnWidth="150dp"
         android:stretchMode="columnWidth"
         android:gravity="center"
         />

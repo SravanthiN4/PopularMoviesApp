@@ -100,7 +100,7 @@ public class MainActivityFragment extends Fragment {
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
-            Log.v(LOG_TAG,"movieArray"+movieArray.length());
+            Log.v(LOG_TAG,"movieArray "+movieArray.length());
             for(int i=0; i<movieArray.length();i++)
             {
                 JSONObject posterPathObject = movieArray.getJSONObject(i);
