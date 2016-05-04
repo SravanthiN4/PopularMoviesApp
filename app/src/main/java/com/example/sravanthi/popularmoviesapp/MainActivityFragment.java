@@ -39,10 +39,25 @@ public class MainActivityFragment extends Fragment {
     public MainActivityFragment() {
     }
 
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        if(savedInstanceState == null || !savedInstanceState.containsKey("posters")) {
+            imagesL = new ArrayList<PosterImages>();
+        }
+        else {
+            imagesL = savedInstanceState.getParcelableArrayList("posters");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("posters", imagesL);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -63,6 +78,7 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onStart() {
+        adapter.clear();
         new FetchPosterTask().execute("posterJsonStr");
         super.onStart();
     }
@@ -77,15 +93,13 @@ public class MainActivityFragment extends Fragment {
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movie_poster);
         adapter = new ImageAdapter(getContext(),imagesL);
         gridview.setAdapter(adapter);
-
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Toast.makeText(getActivity(), "" + position,
-                        Toast.LENGTH_SHORT).show();
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PosterImages posterI = adapter.getItem(position);
+                Toast.makeText(getActivity(),"Poster clicked:"+posterI,Toast.LENGTH_SHORT).show();
             }
         });
-
         return rootView;
     }
 
@@ -201,6 +215,7 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<PosterImages>result) {
+
 
             adapter.updateData(result);
             Log.v(LOG_TAG,"Result:"+result);
