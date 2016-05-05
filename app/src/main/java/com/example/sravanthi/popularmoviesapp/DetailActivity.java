@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 
@@ -68,6 +70,7 @@ public class DetailActivity extends AppCompatActivity {
             Log.d("getParcelable","Pimages "+Pimages);
             ImageView imageV = (ImageView)rootView.findViewById(R.id.poster_received);
             imageV.setVisibility(View.VISIBLE);
+            Picasso.with(getContext()).load().into(imageV);
             return rootView;
         }
     }
