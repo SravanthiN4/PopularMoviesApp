@@ -1,5 +1,6 @@
 package com.example.sravanthi.popularmoviesapp;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +32,7 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+
 
     ArrayList<PosterImages> imagesL = new ArrayList<PosterImages>();
     ImageAdapter adapter;
@@ -87,7 +88,8 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView =  inflater.inflate(R.layout.fragment_main, container, false);
+
+        final View rootView =  inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the GridView, and attach this adapter to it.
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movie_poster);
@@ -96,12 +98,28 @@ public class MainActivityFragment extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PosterImages posterI = adapter.getItem(position);
-                Toast.makeText(getActivity(),"Poster clicked:"+posterI,Toast.LENGTH_SHORT).show();
+                PosterImages imagesP = (PosterImages) adapter.getItem(position);
+                Log.d("imagesP","iP "+imagesP);
+
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                ArrayList<PosterImages> imgP = new ArrayList<PosterImages>();
+
+
+                    imgP.add(imagesP);
+                    Log.d("imagesL","imgP: "+imgP);
+
+
+                intent.putParcelableArrayListExtra("posters",imgP);
+                Log.d("Parcelable","intent:"+intent);
+                startActivity(intent);
+
             }
         });
         return rootView;
     }
+
+
+
 
     public class FetchPosterTask extends AsyncTask<String, Void, ArrayList<PosterImages>>
     {

@@ -54,7 +54,7 @@ public class PosterImages implements Parcelable {
     // `Parcelable.Creator<MyParcelable> CREATOR` constant for our class;
     // Notice how it has our class specified as its type.
 
-    public final Parcelable.Creator<PosterImages> CREATOR = new Parcelable.Creator<PosterImages>() {
+    public static final Parcelable.Creator<PosterImages> CREATOR = new Parcelable.Creator<PosterImages>() {
         // This simply calls our new constructor (typically private) and
         // passes along the unmarshalled `Parcel`, and then returns the new object!
         @Override
