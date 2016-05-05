@@ -9,9 +9,16 @@ import android.os.Parcelable;
 public class PosterImages implements Parcelable {
     // You can include parcel data types
     String poster_path;
+    String overview;
 
-    public PosterImages(String poster_path) {
+    public PosterImages(String poster_path, String overview) {
         this.poster_path = poster_path;
+        this.overview = overview;
+
+    }
+
+    public PosterImages()
+    {
 
     }
 
@@ -21,6 +28,7 @@ public class PosterImages implements Parcelable {
 
     private PosterImages(Parcel in) {
         poster_path = in.readString();
+        overview = in.readString();
     }
 
     public String getPoster_path() {
@@ -31,14 +39,27 @@ public class PosterImages implements Parcelable {
         this.poster_path = poster_path;
     }
 
+    public String getOverview()
+    {
+        return overview;
+    }
+
+    public void setOverview(String overview)
+    {
+        this.overview = overview;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
-    public String toString() {
-        return poster_path;
-    }
+//    public String toString() {
+//        return poster_path;
+//
+//    }
+
+
     // This is where you write the values you want to save to the `Parcel`.
     // The `Parcel` class has methods defined to help you save all of your values.
     // Note that there are only methods defined for simple values, lists, and other Parcelable objects.
@@ -47,6 +68,7 @@ public class PosterImages implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
 
         parcel.writeString(poster_path);
+        parcel.writeString(overview);
 
     }
 
@@ -60,6 +82,7 @@ public class PosterImages implements Parcelable {
         @Override
         public PosterImages createFromParcel(Parcel parcel) {
             return new PosterImages(parcel);
+
         }
 
         // We just need to copy this and change the type to match our class.

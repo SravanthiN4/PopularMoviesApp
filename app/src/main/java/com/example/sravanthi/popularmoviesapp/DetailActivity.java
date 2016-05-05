@@ -4,17 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -53,6 +51,9 @@ public class DetailActivity extends AppCompatActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+        String poster2;
+        String overview2;
+        PosterImages p;
 
         public PlaceholderFragment() {
         }
@@ -64,13 +65,27 @@ public class DetailActivity extends AppCompatActivity {
 
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
+            Intent intent = getActivity().getIntent();
+            if(intent!=null)
+            {
+                Bundle b = intent.getExtras();
+                p = (PosterImages)b.getParcelable("posters1");
+                p = (PosterImages) b.getParcelable("overview1");
 
-            Intent i = getActivity().getIntent();
-            ArrayList<PosterImages> Pimages = i.getParcelableArrayListExtra("posters");
-            Log.d("getParcelable","Pimages "+Pimages);
+
+
+
+                 //poster2 = b.getString("posters1");
+                 //overview2 = b.getString("overview1");
+            }
+
+
             ImageView imageV = (ImageView)rootView.findViewById(R.id.poster_received);
             imageV.setVisibility(View.VISIBLE);
+
+            TextView textV = (TextView)rootView.findViewById(R.id.overview_received);
             Picasso.with(getContext()).load().into(imageV);
+            textV.setText(p.getOverview());
             return rootView;
         }
     }

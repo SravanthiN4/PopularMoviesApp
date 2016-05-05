@@ -102,16 +102,12 @@ public class MainActivityFragment extends Fragment {
                 Log.d("imagesP","iP "+imagesP);
 
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
-                ArrayList<PosterImages> imgP = new ArrayList<PosterImages>();
-
-
-                    imgP.add(imagesP);
-                    Log.d("imagesL","imgP: "+imgP);
-
-
-                intent.putParcelableArrayListExtra("posters",imgP);
-                Log.d("Parcelable","intent:"+intent);
+                PosterImages images1 = new PosterImages();
+                        intent.putExtra("posters1",imagesP.getPoster_path());
+                        intent.putExtra("overview1",imagesP.getOverview());
                 startActivity(intent);
+
+
 
             }
         });
@@ -129,6 +125,7 @@ public class MainActivityFragment extends Fragment {
         {
             final String MDB_RESULTS = "results";
             final String MDB_POSTER_PATH = "poster_path";
+            final String MDB_OVERVIEW = "overview";
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
@@ -139,7 +136,10 @@ public class MainActivityFragment extends Fragment {
                 Log.v(LOG_TAG,"pPath"+posterPathObject);
                 String postersName =  "http://image.tmdb.org/t/p/w185/"+posterPathObject.getString(MDB_POSTER_PATH);
                 Log.v(LOG_TAG,"pName:"+postersName);
-                imagesL.add(new PosterImages(postersName));
+                String overView = posterPathObject.getString(MDB_OVERVIEW);
+                Log.v(LOG_TAG,"overView:"+overView);
+                imagesL.add(new PosterImages(postersName,overView));
+
                 Log.v(LOG_TAG,"pImages"+imagesL);
 
             }
