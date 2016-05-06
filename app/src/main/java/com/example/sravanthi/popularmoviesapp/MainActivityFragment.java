@@ -102,8 +102,8 @@ public class MainActivityFragment extends Fragment {
                 Log.d("imagesP","iP "+imagesP);
 
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
-                PosterImages posterImages1 = new PosterImages(imagesP.getPoster_path(),imagesP.getOverview(),imagesP.getTitle());
-                Log.d("title","title "+imagesP.getTitle());
+                PosterImages posterImages1 = new PosterImages(imagesP.getPoster_path(),imagesP.getOverview(),imagesP.getTitle(),imagesP.getRelease_date(),imagesP.getVote_average());
+                Log.d("releasedate","releasedate "+imagesP.getRelease_date());
                 intent.putExtra("posterimages",posterImages1);
                 startActivity(intent);
 
@@ -127,6 +127,8 @@ public class MainActivityFragment extends Fragment {
             final String MDB_POSTER_PATH = "poster_path";
             final String MDB_OVERVIEW = "overview";
             final String MDB_TITLE = "title";
+            final String MDB_RELEASE_DATE = "release_date";
+            final String MDB_USER_RATING = "vote_average";
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
@@ -141,7 +143,14 @@ public class MainActivityFragment extends Fragment {
                 Log.v(LOG_TAG,"overView:"+overView);
                 String posterTitle = posterPathObject.getString(MDB_TITLE);
                 Log.v(LOG_TAG,"posterTitle:"+posterTitle);
-                imagesL.add(new PosterImages(postersName,overView,posterTitle));
+                String releaseDate = posterPathObject.getString(MDB_RELEASE_DATE);
+                Log.v(LOG_TAG,"releaseDate:"+releaseDate);
+//                String a = releaseDate.substring(0,4);
+//                Log.v(LOG_TAG,"a:"+a);
+                String userRating = posterPathObject.getString(MDB_USER_RATING);
+                Log.v(LOG_TAG,"userRating:"+userRating);
+
+                imagesL.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating));
 
 
                 Log.v(LOG_TAG,"pImages"+imagesL);

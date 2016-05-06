@@ -29,6 +29,32 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/release_date_received"
+        android:layout_below="@id/title_received"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif"
+        android:layout_toRightOf="@id/poster_received"
+        android:paddingLeft="40dp"
+        android:paddingTop="5dp"
+
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vote_average_received"
+        android:layout_below="@+id/release_date_received"
+        android:layout_toRightOf="@+id/poster_received"
+        android:textColor="#000000"
+        android:textSize="15sp"
+        android:fontFamily="sans-serif"
+        android:paddingLeft="40dp"
+        android:paddingTop="5dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/overview_received"
         android:layout_below="@id/poster_received"
         android:layout_marginTop="10dp"/>

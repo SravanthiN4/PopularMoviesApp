@@ -11,18 +11,19 @@ public class PosterImages implements Parcelable {
     String poster_path;
     String overview;
     String title;
+    String release_date;
+    String vote_average;
 
-    public PosterImages(String poster_path, String overview,String title) {
+    public PosterImages(String poster_path, String overview,String title,String release_date,String vote_average) {
         this.poster_path = poster_path;
         this.overview = overview;
         this.title = title;
+        this.release_date = release_date;
+        this.vote_average = vote_average;
 
     }
 
-    public PosterImages()
-    {
 
-    }
 
     // Using the `in` variable, we can retrieve the values that
     // we originally wrote into the `Parcel`.  This constructor is usually
@@ -32,6 +33,8 @@ public class PosterImages implements Parcelable {
         poster_path = in.readString();
         overview = in.readString();
         title = in.readString();
+        release_date = in.readString();
+        vote_average = in.readString();
     }
 
     public String getPoster_path() {
@@ -61,6 +64,25 @@ public class PosterImages implements Parcelable {
         this.title = title;
     }
 
+    public String getRelease_date()
+    {
+        return release_date;
+    }
+
+    public void setRelease_date(String release_date)
+    {
+        this.release_date = release_date;
+    }
+
+    public String getVote_average()
+    {
+        return vote_average;
+    }
+    public void setVote_average(String vote_average)
+    {
+        this.vote_average = vote_average;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -79,6 +101,8 @@ public class PosterImages implements Parcelable {
         parcel.writeString(poster_path);
         parcel.writeString(overview);
         parcel.writeString(title);
+        parcel.writeString(release_date);
+        parcel.writeString(vote_average);
 
     }
 

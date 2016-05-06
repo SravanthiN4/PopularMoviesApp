@@ -73,9 +73,15 @@ public class DetailActivity extends AppCompatActivity {
 
             TextView titleV = (TextView)rootView.findViewById(R.id.title_received);
 
+            TextView releasedateV = (TextView)rootView.findViewById(R.id.release_date_received);
+
+            TextView voteaverageV = (TextView)rootView.findViewById(R.id.vote_average_received);
+
             Picasso.with(getContext()).load(images2.getPoster_path()).into(imageV);
             textV.setText(images2.getOverview());
             titleV.setText(images2.getTitle());
+            releasedateV.setText(images2.getRelease_date().substring(0,4));
+            voteaverageV.setText(images2.getVote_average()+"/10");
             return rootView;
         }
     }
