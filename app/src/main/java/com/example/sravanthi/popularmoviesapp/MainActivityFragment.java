@@ -102,9 +102,9 @@ public class MainActivityFragment extends Fragment {
                 Log.d("imagesP","iP "+imagesP);
 
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
-                PosterImages images1 = new PosterImages();
-                        intent.putExtra("posters1",imagesP.getPoster_path());
-                        intent.putExtra("overview1",imagesP.getOverview());
+                PosterImages posterImages1 = new PosterImages(imagesP.getPoster_path(),imagesP.getOverview(),imagesP.getTitle());
+                Log.d("title","title "+imagesP.getTitle());
+                intent.putExtra("posterimages",posterImages1);
                 startActivity(intent);
 
 
@@ -126,6 +126,7 @@ public class MainActivityFragment extends Fragment {
             final String MDB_RESULTS = "results";
             final String MDB_POSTER_PATH = "poster_path";
             final String MDB_OVERVIEW = "overview";
+            final String MDB_TITLE = "title";
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
@@ -138,7 +139,10 @@ public class MainActivityFragment extends Fragment {
                 Log.v(LOG_TAG,"pName:"+postersName);
                 String overView = posterPathObject.getString(MDB_OVERVIEW);
                 Log.v(LOG_TAG,"overView:"+overView);
-                imagesL.add(new PosterImages(postersName,overView));
+                String posterTitle = posterPathObject.getString(MDB_TITLE);
+                Log.v(LOG_TAG,"posterTitle:"+posterTitle);
+                imagesL.add(new PosterImages(postersName,overView,posterTitle));
+
 
                 Log.v(LOG_TAG,"pImages"+imagesL);
 

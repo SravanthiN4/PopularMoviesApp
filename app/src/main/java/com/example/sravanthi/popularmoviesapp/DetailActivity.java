@@ -51,9 +51,7 @@ public class DetailActivity extends AppCompatActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
-        String poster2;
-        String overview2;
-        PosterImages p;
+
 
         public PlaceholderFragment() {
         }
@@ -66,26 +64,18 @@ public class DetailActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
             Intent intent = getActivity().getIntent();
-            if(intent!=null)
-            {
-                Bundle b = intent.getExtras();
-                p = (PosterImages)b.getParcelable("posters1");
-                p = (PosterImages) b.getParcelable("overview1");
-
-
-
-
-                 //poster2 = b.getString("posters1");
-                 //overview2 = b.getString("overview1");
-            }
-
+            PosterImages images2 = intent.getExtras().getParcelable("posterimages");
 
             ImageView imageV = (ImageView)rootView.findViewById(R.id.poster_received);
             imageV.setVisibility(View.VISIBLE);
 
             TextView textV = (TextView)rootView.findViewById(R.id.overview_received);
-            Picasso.with(getContext()).load().into(imageV);
-            textV.setText(p.getOverview());
+
+            TextView titleV = (TextView)rootView.findViewById(R.id.title_received);
+
+            Picasso.with(getContext()).load(images2.getPoster_path()).into(imageV);
+            textV.setText(images2.getOverview());
+            titleV.setText(images2.getTitle());
             return rootView;
         }
     }

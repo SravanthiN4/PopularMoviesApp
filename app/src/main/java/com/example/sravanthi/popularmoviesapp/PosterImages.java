@@ -10,10 +10,12 @@ public class PosterImages implements Parcelable {
     // You can include parcel data types
     String poster_path;
     String overview;
+    String title;
 
-    public PosterImages(String poster_path, String overview) {
+    public PosterImages(String poster_path, String overview,String title) {
         this.poster_path = poster_path;
         this.overview = overview;
+        this.title = title;
 
     }
 
@@ -29,6 +31,7 @@ public class PosterImages implements Parcelable {
     private PosterImages(Parcel in) {
         poster_path = in.readString();
         overview = in.readString();
+        title = in.readString();
     }
 
     public String getPoster_path() {
@@ -49,15 +52,21 @@ public class PosterImages implements Parcelable {
         this.overview = overview;
     }
 
+    public String getTitle()
+    {
+        return title;
+    }
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
-//    public String toString() {
-//        return poster_path;
-//
-//    }
+
 
 
     // This is where you write the values you want to save to the `Parcel`.
@@ -69,6 +78,7 @@ public class PosterImages implements Parcelable {
 
         parcel.writeString(poster_path);
         parcel.writeString(overview);
+        parcel.writeString(title);
 
     }
 
