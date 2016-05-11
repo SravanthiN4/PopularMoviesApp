@@ -1,6 +1,19 @@
 <resources>
+
     <string name="app_name">PopularMoviesApp</string>
-    <string name="action_settings">Settings</string>
     <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="action_settings" translatable="false">Settings</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="movieKey">movietypes</string>
+    <string name="movieTitle">MovieTypes</string>
+    <string name="defaultValue">popular</string>
+
+    <string name="arrayPopular">popular</string>
+    <string name="arrayTopRated">toprated</string>
+
+    <string name="arrayPopularValue">popularValue</string>
+    <string name="arrayTopRatedValue">topratedValue</string>
+
 </resources>

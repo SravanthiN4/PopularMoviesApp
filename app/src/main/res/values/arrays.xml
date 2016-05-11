@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_movie_options">
+        <item>@string/arrayPopular</item>
+        <item>@string/arrayTopRated</item>
+    </string-array>
+
+    <string-array name="pref_movie_values">
+        <item>@string/arrayPopularValue</item>
+        <item>@string/arrayTopRatedValue</item>
+    </string-array>
+</resources>

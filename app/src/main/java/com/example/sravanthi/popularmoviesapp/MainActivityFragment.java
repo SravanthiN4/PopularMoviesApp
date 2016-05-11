@@ -1,9 +1,11 @@
 package com.example.sravanthi.popularmoviesapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -32,6 +34,8 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+    String movieType;
+
 
 
     ArrayList<PosterImages> imagesL = new ArrayList<PosterImages>();
@@ -63,16 +67,28 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.mainfragment,menu);
+        inflater.inflate(R.menu.menu_main,menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         int id = item.getItemId();
-        if (id == R.id.refresh)
+//        if (id == R.id.action_settings)
+//        {
+//            startActivity(new Intent(getActivity(),SettingsActivity.class));
+//            return true;
+//        }
+        if(id == R.id.action_popular)
         {
+            sharedPreferences.edit().putString(movieType,getString(R.string.arrayPopularValue)).apply();
+            uploadPoster();
+        }
 
-            return true;
+        else if(id == R.id.action_toprated)
+        {
+            sharedPreferences.edit().putString(movieType,getString(R.string.arrayTopRatedValue)).apply();
+            uploadPoster();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -82,6 +98,29 @@ public class MainActivityFragment extends Fragment {
         adapter.clear();
         new FetchPosterTask().execute("posterJsonStr");
         super.onStart();
+    }
+
+    private void uploadPoster()
+    {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Log.d("SharedPref:","sharedPrefs"+sharedPrefs);
+
+        movieType = sharedPrefs.getString(getString(R.string.movieKey),getString(R.string.defaultValue));
+        Log.d("movieType:","movieType"+movieType);
+
+        if(movieType.equals(getString(R.string.arrayPopularValue)))
+        {
+            movieType = "http://api.themoviedb.org/3/movie/popular?api_key=ba332fd5e74eb0c743138fd4ab80412f";
+        }
+        else if(movieType.equals(getString(R.string.arrayTopRatedValue)))
+        {
+            movieType = "http://api.themoviedb.org/3/movie/top_rated?api_key=ba332fd5e74eb0c743138fd4ab80412f";
+        }
+
+        new FetchPosterTask().execute(movieType);
+
+
+
     }
 
     @Override
@@ -241,7 +280,7 @@ public class MainActivityFragment extends Fragment {
 
 
 
-          return null;
+            return null;
         }
 
         @Override
