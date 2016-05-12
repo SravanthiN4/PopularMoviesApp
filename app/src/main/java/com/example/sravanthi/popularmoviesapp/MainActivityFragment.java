@@ -74,11 +74,11 @@ public class MainActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         int id = item.getItemId();
-//        if (id == R.id.action_settings)
-//        {
-//            startActivity(new Intent(getActivity(),SettingsActivity.class));
-//            return true;
-//        }
+        if (id == R.id.action_settings)
+        {
+            startActivity(new Intent(getActivity(),SettingsActivity.class));
+            return true;
+        }
         if(id == R.id.action_popular)
         {
             sharedPreferences.edit().putString(movieType,getString(R.string.arrayPopularValue)).apply();
