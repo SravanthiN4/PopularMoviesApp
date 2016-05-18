@@ -1,5 +1,6 @@
 package com.example.sravanthi.popularmoviesapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
  */
 public class MainActivityFragment extends Fragment {
     String movieType;
+    final int REQ_CODE = 1;
 
 
 
@@ -76,7 +78,7 @@ public class MainActivityFragment extends Fragment {
 
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            startActivity(new Intent(getActivity(), SettingsActivity.class));
+            startActivityForResult(new Intent(getActivity(), SettingsActivity.class),REQ_CODE);
             return true;
         }
 
@@ -85,11 +87,25 @@ public class MainActivityFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrder = prefs.getString(getString(R.string.movieKey),
+                getString(R.string.defaultValue));
+        if(requestCode == REQ_CODE)
+        {
+            if(resultCode == Activity.RESULT_OK)
+            {
+                updateMovies();
+            }
+        }
+    }
 
     @Override
     public void onStart() {
         adapter.clear();
-        updateMovies();
+        new FetchPosterTask().execute("posterJsonStr");
         super.onStart();
     }
 
