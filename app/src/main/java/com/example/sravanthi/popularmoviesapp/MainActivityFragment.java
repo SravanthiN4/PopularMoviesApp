@@ -95,6 +95,7 @@ public class MainActivityFragment extends Fragment {
                 getString(R.string.defaultValue));
         if(requestCode == REQ_CODE)
         {
+            // Make sure the request was successful
             if(resultCode == Activity.RESULT_OK)
             {
                 updateMovies();
