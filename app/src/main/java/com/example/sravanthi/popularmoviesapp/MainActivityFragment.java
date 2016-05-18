@@ -51,6 +51,7 @@ public class MainActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+
         if(savedInstanceState == null || !savedInstanceState.containsKey("posters")) {
             imagesL = new ArrayList<PosterImages>();
         }
@@ -72,56 +73,27 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
         int id = item.getItemId();
-        if (id == R.id.action_settings)
-        {
-            startActivity(new Intent(getActivity(),SettingsActivity.class));
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(getActivity(), SettingsActivity.class));
             return true;
         }
-        if(id == R.id.action_popular)
-        {
-            sharedPreferences.edit().putString(movieType,getString(R.string.arrayPopularValue)).apply();
-            uploadPoster();
-        }
 
-        else if(id == R.id.action_toprated)
-        {
-            sharedPreferences.edit().putString(movieType,getString(R.string.arrayTopRatedValue)).apply();
-            uploadPoster();
-        }
+
+
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onStart() {
         adapter.clear();
-        new FetchPosterTask().execute("posterJsonStr");
+        updateMovies();
         super.onStart();
     }
 
-    private void uploadPoster()
-    {
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Log.d("SharedPref:","sharedPrefs"+sharedPrefs);
 
-        movieType = sharedPrefs.getString(getString(R.string.movieKey),getString(R.string.defaultValue));
-        Log.d("movieType:","movieType"+movieType);
-
-        if(movieType.equals(getString(R.string.arrayPopularValue)))
-        {
-            movieType = "http://api.themoviedb.org/3/movie/popular?api_key=ba332fd5e74eb0c743138fd4ab80412f";
-        }
-        else if(movieType.equals(getString(R.string.arrayTopRatedValue)))
-        {
-            movieType = "http://api.themoviedb.org/3/movie/top_rated?api_key=ba332fd5e74eb0c743138fd4ab80412f";
-        }
-
-        new FetchPosterTask().execute(movieType);
-
-
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -141,7 +113,7 @@ public class MainActivityFragment extends Fragment {
                 Log.d("imagesP","iP "+imagesP);
 
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
-                PosterImages posterImages1 = new PosterImages(imagesP.getPoster_path(),imagesP.getOverview(),imagesP.getTitle(),imagesP.getRelease_date(),imagesP.getVote_average());
+                PosterImages posterImages1 = new PosterImages(imagesP.getPoster_path(),imagesP.getOverview(),imagesP.getTitle(),imagesP.getRelease_date(),imagesP.getVote_average(),imagesP.getPopularity());
                 Log.d("releasedate","releasedate "+imagesP.getRelease_date());
                 intent.putExtra("posterimages",posterImages1);
                 startActivity(intent);
@@ -153,12 +125,22 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
+    private void updateMovies(){
+        FetchPosterTask getMovie = new FetchPosterTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrder = prefs.getString(getString(R.string.movieKey),
+                getString(R.string.defaultValue));
+        Log.i("sort1", sortOrder);
+        getMovie.execute(sortOrder);
+    }
 
 
 
-    public class FetchPosterTask extends AsyncTask<String, Void, ArrayList<PosterImages>>
-    {
+
+    public class FetchPosterTask extends AsyncTask<String, Void, ArrayList<PosterImages>> {
         private final String LOG_TAG = FetchPosterTask.class.getSimpleName();
+
+
 
         private ArrayList<PosterImages> getPosterFromJson(String posterJsonStr) throws JSONException
         {
@@ -168,6 +150,7 @@ public class MainActivityFragment extends Fragment {
             final String MDB_TITLE = "title";
             final String MDB_RELEASE_DATE = "release_date";
             final String MDB_USER_RATING = "vote_average";
+            final String MDB_POPULARITY = "popularity";
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
@@ -189,7 +172,12 @@ public class MainActivityFragment extends Fragment {
                 String userRating = posterPathObject.getString(MDB_USER_RATING);
                 Log.v(LOG_TAG,"userRating:"+userRating);
 
-                imagesL.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating));
+                String popularity = posterPathObject.getString(MDB_POPULARITY);
+                Log.v(LOG_TAG,"popularity:"+popularity);
+
+                imagesL.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating,popularity));
+
+
 
 
                 Log.v(LOG_TAG,"pImages"+imagesL);
@@ -222,8 +210,10 @@ public class MainActivityFragment extends Fragment {
             try {
                 final String POSTER_BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
                 final String APIKEY_PARAM = "api_key";
+                final String SORT_PARAM = "sort_by";
 
                 Uri builtUri = Uri.parse(POSTER_BASE_URL).buildUpon()
+                        .appendQueryParameter(SORT_PARAM,params[0])
                         .appendQueryParameter(APIKEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
                         .build();
 
