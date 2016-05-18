@@ -143,12 +143,12 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void updateMovies(){
-        FetchPosterTask getMovie = new FetchPosterTask();
+        FetchPosterTask getPoster = new FetchPosterTask();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOrder = prefs.getString(getString(R.string.movieKey),
                 getString(R.string.defaultValue));
         Log.i("sort1", sortOrder);
-        getMovie.execute(sortOrder);
+        getPoster.execute(sortOrder);
     }
 
 
