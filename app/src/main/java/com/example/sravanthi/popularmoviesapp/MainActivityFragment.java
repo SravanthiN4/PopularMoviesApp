@@ -37,6 +37,7 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
     String movieType;
     final int REQ_CODE = 1;
+    String sort;
 
 
 
@@ -130,7 +131,7 @@ public class MainActivityFragment extends Fragment {
                 Log.d("imagesP","iP "+imagesP);
 
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
-                PosterImages posterImages1 = new PosterImages(imagesP.getPoster_path(),imagesP.getOverview(),imagesP.getTitle(),imagesP.getRelease_date(),imagesP.getVote_average(),imagesP.getPopularity());
+                PosterImages posterImages1 = new PosterImages(imagesP.getPoster_path(),imagesP.getOverview(),imagesP.getTitle(),imagesP.getRelease_date(),imagesP.getVote_average(),imagesP.getPopularity(),imagesP.getId());
                 Log.d("releasedate","releasedate "+imagesP.getRelease_date());
                 intent.putExtra("posterimages",posterImages1);
                 startActivity(intent);
@@ -154,6 +155,8 @@ public class MainActivityFragment extends Fragment {
 
 
 
+
+
     public class FetchPosterTask extends AsyncTask<String, Void, ArrayList<PosterImages>> {
         private final String LOG_TAG = FetchPosterTask.class.getSimpleName();
 
@@ -168,6 +171,7 @@ public class MainActivityFragment extends Fragment {
             final String MDB_RELEASE_DATE = "release_date";
             final String MDB_USER_RATING = "vote_average";
             final String MDB_POPULARITY = "popularity";
+            final String MDB_ID = "id";
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
@@ -192,7 +196,10 @@ public class MainActivityFragment extends Fragment {
                 String popularity = posterPathObject.getString(MDB_POPULARITY);
                 Log.v(LOG_TAG,"popularity:"+popularity);
 
-                imagesL.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating,popularity));
+                String id = posterPathObject.getString(MDB_ID);
+                Log.v(LOG_TAG,"id:"+id);
+
+                imagesL.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating,popularity,id));
 
 
 
@@ -213,6 +220,15 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected ArrayList<PosterImages> doInBackground(String... params) {
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sort = pref.getString(getString(R.string.movieKey),getString(R.string.defaultValue));
+            switch (sort)
+            {
+                case "0": sort = "popularity";
+                    break;
+                case "1": sort = "top_rated";
+                    break;
+            }
 
             if (params.length == 0) {
                 Log.v(LOG_TAG,"error:"+params);
@@ -225,12 +241,12 @@ public class MainActivityFragment extends Fragment {
             String posterJsonStr = null;
 
             try {
-                final String POSTER_BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
+                final String POSTER_BASE_URL = "http://api.themoviedb.org/3/movie";
                 final String APIKEY_PARAM = "api_key";
-                final String SORT_PARAM = "sort_by";
+
 
                 Uri builtUri = Uri.parse(POSTER_BASE_URL).buildUpon()
-                        .appendQueryParameter(SORT_PARAM,params[0])
+                        .appendPath(sort)
                         .appendQueryParameter(APIKEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
                         .build();
 

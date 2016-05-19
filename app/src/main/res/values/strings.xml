@@ -13,7 +13,7 @@
     <string name="arrayPopular">popular</string>
     <string name="arrayTopRated">toprated</string>
 
-    <string name="arrayPopularValue">popularValue</string>
-    <string name="arrayTopRatedValue">topratedValue</string>
+    <string name="arrayPopularValue">popular</string>
+    <string name="arrayTopRatedValue">top_rated</string>
 
 </resources>

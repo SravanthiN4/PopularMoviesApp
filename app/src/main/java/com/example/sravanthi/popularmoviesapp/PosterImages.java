@@ -14,14 +14,16 @@ public class PosterImages implements Parcelable {
     String release_date;
     String vote_average;
     String popularity;
+    String id;
 
-    public PosterImages(String poster_path, String overview,String title,String release_date,String vote_average,String popularity) {
+    public PosterImages(String poster_path, String overview,String title,String release_date,String vote_average,String popularity,String id) {
         this.poster_path = poster_path;
         this.overview = overview;
         this.title = title;
         this.release_date = release_date;
         this.vote_average = vote_average;
         this.popularity = popularity;
+        this.id = id;
 
     }
 
@@ -38,6 +40,7 @@ public class PosterImages implements Parcelable {
         release_date = in.readString();
         vote_average = in.readString();
         popularity = in.readString();
+        id = in.readString();
     }
 
     public String getPoster_path() {
@@ -95,6 +98,15 @@ public class PosterImages implements Parcelable {
         this.popularity = popularity;
     }
 
+    public String getId()
+    {
+        return id;
+    }
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -116,6 +128,7 @@ public class PosterImages implements Parcelable {
         parcel.writeString(release_date);
         parcel.writeString(vote_average);
         parcel.writeString(popularity);
+        parcel.writeString(id);
 
     }
 
