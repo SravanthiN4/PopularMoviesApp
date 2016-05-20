@@ -47,7 +47,9 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-
+    /*
+        On rotation of device the state is saved
+    */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,10 +71,16 @@ public class MainActivityFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+
+        //Creating options menu and inflating it
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main,menu);
     }
+
+    /*on option selected,request,get the result from the SettingsActivity and update the movie
+    based on user preference
+    */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -88,6 +96,8 @@ public class MainActivityFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -96,7 +106,6 @@ public class MainActivityFragment extends Fragment {
                 getString(R.string.defaultValue));
         if(requestCode == REQ_CODE)
         {
-            // Make sure the request was successful
             if(resultCode == Activity.RESULT_OK)
             {
                 updateMovies();
@@ -104,14 +113,17 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
+
+
     private void updateMovies(){
         FetchPosterTask getPoster = new FetchPosterTask();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOrder = prefs.getString(getString(R.string.movieKey),
                 getString(R.string.defaultValue));
-        //Log.i("sort1", sortOrder);
         getPoster.execute(sortOrder);
     }
+
+    //Update Data received from the server in onStart
 
     @Override
     public void onStart() {
@@ -121,7 +133,7 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-
+    //inflate gridview and on selecting each poster, it goes to the details activity with extras
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -137,11 +149,8 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PosterImages posterDetail = (PosterImages) adapter.getItem(position);
-                //Log.d("imagesP","iP "+posterDetail);
-
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
                 PosterImages posterImageDetails = new PosterImages(posterDetail.getPoster_path(),posterDetail.getOverview(),posterDetail.getTitle(),posterDetail.getRelease_date(),posterDetail.getVote_average(),posterDetail.getPopularity(),posterDetail.getId());
-                //Log.d("releasedate","releasedate "+posterDetail.getRelease_date());
                 intent.putExtra("posterimages",posterImageDetails);
                 startActivity(intent);
 
@@ -158,6 +167,7 @@ public class MainActivityFragment extends Fragment {
 
 
 
+    //background network call in AsyncTask
 
     public class FetchPosterTask extends AsyncTask<String, Void, ArrayList<PosterImages>> {
         private final String LOG_TAG = FetchPosterTask.class.getSimpleName();
@@ -174,48 +184,21 @@ public class MainActivityFragment extends Fragment {
             final String MDB_USER_RATING = "vote_average";
             final String MDB_POPULARITY = "popularity";
             final String MDB_ID = "id";
-            //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
-            //Log.v(LOG_TAG,"movieArray "+movieArray.length());
             for(int i=0; i<movieArray.length();i++)
             {
                 JSONObject posterPathObject = movieArray.getJSONObject(i);
-                //Log.v(LOG_TAG,"pPath"+posterPathObject);
                 String postersName =  "http://image.tmdb.org/t/p/w185/"+posterPathObject.getString(MDB_POSTER_PATH);
-                //Log.v(LOG_TAG,"pName:"+postersName);
                 String overView = posterPathObject.getString(MDB_OVERVIEW);
-                //Log.v(LOG_TAG,"overView:"+overView);
                 String posterTitle = posterPathObject.getString(MDB_TITLE);
-                //Log.v(LOG_TAG,"posterTitle:"+posterTitle);
                 String releaseDate = posterPathObject.getString(MDB_RELEASE_DATE);
-                //Log.v(LOG_TAG,"releaseDate:"+releaseDate);
-//                String a = releaseDate.substring(0,4);
-//                Log.v(LOG_TAG,"a:"+a);
                 String userRating = posterPathObject.getString(MDB_USER_RATING);
-                //Log.v(LOG_TAG,"userRating:"+userRating);
-
                 String popularity = posterPathObject.getString(MDB_POPULARITY);
-                //Log.v(LOG_TAG,"popularity:"+popularity);
-
                 String id = posterPathObject.getString(MDB_ID);
-                //Log.v(LOG_TAG,"id:"+id);
-
                 posterImagesArrayList.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating,popularity,id));
-
-
-
-
-                //Log.v(LOG_TAG,"pImages"+ posterImagesArrayList);
-
             }
-
-            //Log.v(LOG_TAG,"imageL"+ posterImagesArrayList);
             return posterImagesArrayList;
-
-
-
-
         }
 
 
@@ -224,7 +207,6 @@ public class MainActivityFragment extends Fragment {
         protected ArrayList<PosterImages> doInBackground(String... params) {
 
             if (params.length == 0) {
-                //Log.v(LOG_TAG,"error:"+params);
                 return null;
 
             }
@@ -242,7 +224,6 @@ public class MainActivityFragment extends Fragment {
           
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-            //will contain the json response as a String
             String posterJsonStr = null;
 
             try {
@@ -256,9 +237,6 @@ public class MainActivityFragment extends Fragment {
                         .build();
 
                 URL url = new URL(builtUri.toString());
-
-                //Log.v(LOG_TAG, "Built URI " + builtUri.toString());
-
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
@@ -266,7 +244,7 @@ public class MainActivityFragment extends Fragment {
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
-                    //Log.v(LOG_TAG,"iStream:"+inputStream);
+
                     return null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -276,13 +254,13 @@ public class MainActivityFragment extends Fragment {
                     buffer.append(line + "\n");
                 }
                 if (buffer.length() == 0) {
-                    //Log.v(LOG_TAG,"buffer"+buffer);
+
                     return null;
                 }
                 posterJsonStr = buffer.toString();
-                //Log.v(LOG_TAG, "Poster Json String:" + posterJsonStr);
+
             } catch (IOException e) {
-               // Log.e(LOG_TAG, "Error", e);
+
                 return null;
             } finally {
                 if (urlConnection != null) {
@@ -292,7 +270,7 @@ public class MainActivityFragment extends Fragment {
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        //Log.e(LOG_TAG, "Error closing stream", e);
+
                     }
                 }
             }
@@ -302,7 +280,7 @@ public class MainActivityFragment extends Fragment {
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                //Log.e(LOG_TAG,"Error"+e);
+
             }
 
 
@@ -311,12 +289,14 @@ public class MainActivityFragment extends Fragment {
             return null;
         }
 
+        //Update UI in OnPostExecute
+
         @Override
         protected void onPostExecute(ArrayList<PosterImages>result) {
 
 
             adapter.updateData(result);
-            //Log.v(LOG_TAG,"Result:"+result);
+
         }
     }
 }
