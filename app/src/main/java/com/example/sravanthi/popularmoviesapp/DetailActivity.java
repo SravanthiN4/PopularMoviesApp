@@ -64,7 +64,7 @@ public class DetailActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
             Intent intent = getActivity().getIntent();
-            PosterImages images2 = intent.getExtras().getParcelable("posterimages");
+            PosterImages detailsOfImage = intent.getExtras().getParcelable("posterimages");
 
             ImageView imageV = (ImageView)rootView.findViewById(R.id.poster_received);
             imageV.setVisibility(View.VISIBLE);
@@ -77,11 +77,11 @@ public class DetailActivity extends AppCompatActivity {
 
             TextView voteaverageV = (TextView)rootView.findViewById(R.id.vote_average_received);
 
-            Picasso.with(getContext()).load(images2.getPoster_path()).into(imageV);
-            textV.setText(images2.getOverview());
-            titleV.setText(images2.getTitle());
-            releasedateV.setText(images2.getRelease_date().substring(0,4));
-            voteaverageV.setText(images2.getVote_average()+"/10");
+            Picasso.with(getContext()).load(detailsOfImage.getPoster_path()).into(imageV);
+            textV.setText(detailsOfImage.getOverview());
+            titleV.setText(detailsOfImage.getTitle());
+            releasedateV.setText(detailsOfImage.getRelease_date().substring(0,4));
+            voteaverageV.setText(detailsOfImage.getVote_average()+"/10");
             return rootView;
         }
     }

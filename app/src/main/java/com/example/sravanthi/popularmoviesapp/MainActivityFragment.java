@@ -41,7 +41,7 @@ public class MainActivityFragment extends Fragment {
 
 
 
-    ArrayList<PosterImages> imagesL = new ArrayList<PosterImages>();
+    ArrayList<PosterImages> posterImagesArrayList = new ArrayList<PosterImages>();
     ImageAdapter adapter;
 
     public MainActivityFragment() {
@@ -56,16 +56,17 @@ public class MainActivityFragment extends Fragment {
 
 
         if(savedInstanceState == null || !savedInstanceState.containsKey("posters")) {
-            imagesL = new ArrayList<PosterImages>();
+            posterImagesArrayList = new ArrayList<PosterImages>();
         }
         else {
-            imagesL = savedInstanceState.getParcelableArrayList("posters");
+            posterImagesArrayList = savedInstanceState.getParcelableArrayList("posters");
         }
     }
+    
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("posters", imagesL);
+        outState.putParcelableArrayList("posters", posterImagesArrayList);
         super.onSaveInstanceState(outState);
     }
 
@@ -104,6 +105,15 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
+    private void updateMovies(){
+        FetchPosterTask getPoster = new FetchPosterTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrder = prefs.getString(getString(R.string.movieKey),
+                getString(R.string.defaultValue));
+        Log.i("sort1", sortOrder);
+        getPoster.execute(sortOrder);
+    }
+
     @Override
     public void onStart() {
         adapter.clear();
@@ -122,18 +132,18 @@ public class MainActivityFragment extends Fragment {
 
         // Get a reference to the GridView, and attach this adapter to it.
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movie_poster);
-        adapter = new ImageAdapter(getContext(),imagesL);
+        adapter = new ImageAdapter(getContext(), posterImagesArrayList);
         gridview.setAdapter(adapter);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PosterImages imagesP = (PosterImages) adapter.getItem(position);
-                Log.d("imagesP","iP "+imagesP);
+                PosterImages posterDetail = (PosterImages) adapter.getItem(position);
+                Log.d("imagesP","iP "+posterDetail);
 
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
-                PosterImages posterImages1 = new PosterImages(imagesP.getPoster_path(),imagesP.getOverview(),imagesP.getTitle(),imagesP.getRelease_date(),imagesP.getVote_average(),imagesP.getPopularity(),imagesP.getId());
-                Log.d("releasedate","releasedate "+imagesP.getRelease_date());
-                intent.putExtra("posterimages",posterImages1);
+                PosterImages posterImageDetails = new PosterImages(posterDetail.getPoster_path(),posterDetail.getOverview(),posterDetail.getTitle(),posterDetail.getRelease_date(),posterDetail.getVote_average(),posterDetail.getPopularity(),posterDetail.getId());
+                Log.d("releasedate","releasedate "+posterDetail.getRelease_date());
+                intent.putExtra("posterimages",posterImageDetails);
                 startActivity(intent);
 
 
@@ -143,14 +153,7 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
-    private void updateMovies(){
-        FetchPosterTask getPoster = new FetchPosterTask();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrder = prefs.getString(getString(R.string.movieKey),
-                getString(R.string.defaultValue));
-        Log.i("sort1", sortOrder);
-        getPoster.execute(sortOrder);
-    }
+    
 
 
 
@@ -199,17 +202,17 @@ public class MainActivityFragment extends Fragment {
                 String id = posterPathObject.getString(MDB_ID);
                 Log.v(LOG_TAG,"id:"+id);
 
-                imagesL.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating,popularity,id));
+                posterImagesArrayList.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating,popularity,id));
 
 
 
 
-                Log.v(LOG_TAG,"pImages"+imagesL);
+                Log.v(LOG_TAG,"pImages"+ posterImagesArrayList);
 
             }
 
-            Log.v(LOG_TAG,"imageL"+imagesL);
-            return imagesL;
+            Log.v(LOG_TAG,"imageL"+ posterImagesArrayList);
+            return posterImagesArrayList;
 
 
 
@@ -220,6 +223,13 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected ArrayList<PosterImages> doInBackground(String... params) {
+
+            if (params.length == 0) {
+                Log.v(LOG_TAG,"error:"+params);
+                return null;
+
+            }
+            
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sort = pref.getString(getString(R.string.movieKey),getString(R.string.defaultValue));
             switch (sort)
@@ -230,11 +240,7 @@ public class MainActivityFragment extends Fragment {
                     break;
             }
 
-            if (params.length == 0) {
-                Log.v(LOG_TAG,"error:"+params);
-                return null;
-
-            }
+          
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             //will contain the json response as a String
