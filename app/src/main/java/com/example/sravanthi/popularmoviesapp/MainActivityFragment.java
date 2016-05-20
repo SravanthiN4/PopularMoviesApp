@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -110,7 +109,7 @@ public class MainActivityFragment extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOrder = prefs.getString(getString(R.string.movieKey),
                 getString(R.string.defaultValue));
-        Log.i("sort1", sortOrder);
+        //Log.i("sort1", sortOrder);
         getPoster.execute(sortOrder);
     }
 
@@ -138,11 +137,11 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PosterImages posterDetail = (PosterImages) adapter.getItem(position);
-                Log.d("imagesP","iP "+posterDetail);
+                //Log.d("imagesP","iP "+posterDetail);
 
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
                 PosterImages posterImageDetails = new PosterImages(posterDetail.getPoster_path(),posterDetail.getOverview(),posterDetail.getTitle(),posterDetail.getRelease_date(),posterDetail.getVote_average(),posterDetail.getPopularity(),posterDetail.getId());
-                Log.d("releasedate","releasedate "+posterDetail.getRelease_date());
+                //Log.d("releasedate","releasedate "+posterDetail.getRelease_date());
                 intent.putExtra("posterimages",posterImageDetails);
                 startActivity(intent);
 
@@ -178,40 +177,40 @@ public class MainActivityFragment extends Fragment {
             //String[] resultStrs = new String[20];
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
-            Log.v(LOG_TAG,"movieArray "+movieArray.length());
+            //Log.v(LOG_TAG,"movieArray "+movieArray.length());
             for(int i=0; i<movieArray.length();i++)
             {
                 JSONObject posterPathObject = movieArray.getJSONObject(i);
-                Log.v(LOG_TAG,"pPath"+posterPathObject);
+                //Log.v(LOG_TAG,"pPath"+posterPathObject);
                 String postersName =  "http://image.tmdb.org/t/p/w185/"+posterPathObject.getString(MDB_POSTER_PATH);
-                Log.v(LOG_TAG,"pName:"+postersName);
+                //Log.v(LOG_TAG,"pName:"+postersName);
                 String overView = posterPathObject.getString(MDB_OVERVIEW);
-                Log.v(LOG_TAG,"overView:"+overView);
+                //Log.v(LOG_TAG,"overView:"+overView);
                 String posterTitle = posterPathObject.getString(MDB_TITLE);
-                Log.v(LOG_TAG,"posterTitle:"+posterTitle);
+                //Log.v(LOG_TAG,"posterTitle:"+posterTitle);
                 String releaseDate = posterPathObject.getString(MDB_RELEASE_DATE);
-                Log.v(LOG_TAG,"releaseDate:"+releaseDate);
+                //Log.v(LOG_TAG,"releaseDate:"+releaseDate);
 //                String a = releaseDate.substring(0,4);
 //                Log.v(LOG_TAG,"a:"+a);
                 String userRating = posterPathObject.getString(MDB_USER_RATING);
-                Log.v(LOG_TAG,"userRating:"+userRating);
+                //Log.v(LOG_TAG,"userRating:"+userRating);
 
                 String popularity = posterPathObject.getString(MDB_POPULARITY);
-                Log.v(LOG_TAG,"popularity:"+popularity);
+                //Log.v(LOG_TAG,"popularity:"+popularity);
 
                 String id = posterPathObject.getString(MDB_ID);
-                Log.v(LOG_TAG,"id:"+id);
+                //Log.v(LOG_TAG,"id:"+id);
 
                 posterImagesArrayList.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating,popularity,id));
 
 
 
 
-                Log.v(LOG_TAG,"pImages"+ posterImagesArrayList);
+                //Log.v(LOG_TAG,"pImages"+ posterImagesArrayList);
 
             }
 
-            Log.v(LOG_TAG,"imageL"+ posterImagesArrayList);
+            //Log.v(LOG_TAG,"imageL"+ posterImagesArrayList);
             return posterImagesArrayList;
 
 
@@ -225,7 +224,7 @@ public class MainActivityFragment extends Fragment {
         protected ArrayList<PosterImages> doInBackground(String... params) {
 
             if (params.length == 0) {
-                Log.v(LOG_TAG,"error:"+params);
+                //Log.v(LOG_TAG,"error:"+params);
                 return null;
 
             }
@@ -258,7 +257,7 @@ public class MainActivityFragment extends Fragment {
 
                 URL url = new URL(builtUri.toString());
 
-                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+                //Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -267,7 +266,7 @@ public class MainActivityFragment extends Fragment {
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
-                    Log.v(LOG_TAG,"iStream:"+inputStream);
+                    //Log.v(LOG_TAG,"iStream:"+inputStream);
                     return null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -277,13 +276,13 @@ public class MainActivityFragment extends Fragment {
                     buffer.append(line + "\n");
                 }
                 if (buffer.length() == 0) {
-                    Log.v(LOG_TAG,"buffer"+buffer);
+                    //Log.v(LOG_TAG,"buffer"+buffer);
                     return null;
                 }
                 posterJsonStr = buffer.toString();
-                Log.v(LOG_TAG, "Poster Json String:" + posterJsonStr);
+                //Log.v(LOG_TAG, "Poster Json String:" + posterJsonStr);
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Error", e);
+               // Log.e(LOG_TAG, "Error", e);
                 return null;
             } finally {
                 if (urlConnection != null) {
@@ -293,7 +292,7 @@ public class MainActivityFragment extends Fragment {
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
+                        //Log.e(LOG_TAG, "Error closing stream", e);
                     }
                 }
             }
@@ -303,7 +302,7 @@ public class MainActivityFragment extends Fragment {
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.e(LOG_TAG,"Error"+e);
+                //Log.e(LOG_TAG,"Error"+e);
             }
 
 
@@ -317,7 +316,7 @@ public class MainActivityFragment extends Fragment {
 
 
             adapter.updateData(result);
-            Log.v(LOG_TAG,"Result:"+result);
+            //Log.v(LOG_TAG,"Result:"+result);
         }
     }
 }
