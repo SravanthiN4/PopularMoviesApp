@@ -19,7 +19,6 @@ import java.util.List;
 public class ImageAdapter extends ArrayAdapter<PosterImages> {
 
     private final String LOG_TAG = ImageAdapter.class.getSimpleName();
-    //private Context mContext;
     List<PosterImages> posterImages;
 
 
@@ -36,8 +35,6 @@ public class ImageAdapter extends ArrayAdapter<PosterImages> {
 
     public ImageAdapter(Context context, List<PosterImages> images) {
         super(context,0, images);
-        //this.mContext = context;
-        //this.posterImages = images;
     }
 
     public void updateData(ArrayList<PosterImages>newPosters)
