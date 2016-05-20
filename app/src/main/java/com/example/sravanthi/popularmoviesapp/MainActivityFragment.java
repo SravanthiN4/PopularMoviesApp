@@ -189,6 +189,8 @@ public class MainActivityFragment extends Fragment {
 
             }
 
+            //Used SharedPreferences to select the popular or top rated movies depending on users choice
+
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sort = pref.getString(getString(R.string.movieKey), getString(R.string.defaultValue));
             switch (sort) {
