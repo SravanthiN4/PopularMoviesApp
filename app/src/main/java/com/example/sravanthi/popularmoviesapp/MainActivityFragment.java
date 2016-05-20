@@ -34,12 +34,7 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-    String movieType;
     final int REQ_CODE = 1;
-    String sort;
-
-
-
     ArrayList<PosterImages> posterImagesArrayList = new ArrayList<PosterImages>();
     ImageAdapter adapter;
 
@@ -56,14 +51,13 @@ public class MainActivityFragment extends Fragment {
         setHasOptionsMenu(true);
 
 
-        if(savedInstanceState == null || !savedInstanceState.containsKey("posters")) {
+        if (savedInstanceState == null || !savedInstanceState.containsKey("posters")) {
             posterImagesArrayList = new ArrayList<PosterImages>();
-        }
-        else {
+        } else {
             posterImagesArrayList = savedInstanceState.getParcelableArrayList("posters");
         }
     }
-    
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -72,10 +66,10 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-        //Creating options menu and inflating it
+    //Creating options menu and inflating it
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main,menu);
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     /*on option selected,request,get the result from the SettingsActivity and update the movie
@@ -87,15 +81,12 @@ public class MainActivityFragment extends Fragment {
 
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            startActivityForResult(new Intent(getActivity(), SettingsActivity.class),REQ_CODE);
+            startActivityForResult(new Intent(getActivity(), SettingsActivity.class), REQ_CODE);
             return true;
         }
 
-
-
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
@@ -104,18 +95,15 @@ public class MainActivityFragment extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOrder = prefs.getString(getString(R.string.movieKey),
                 getString(R.string.defaultValue));
-        if(requestCode == REQ_CODE)
-        {
-            if(resultCode == Activity.RESULT_OK)
-            {
+        if (requestCode == REQ_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
                 updateMovies();
             }
         }
     }
 
 
-
-    private void updateMovies(){
+    private void updateMovies() {
         FetchPosterTask getPoster = new FetchPosterTask();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOrder = prefs.getString(getString(R.string.movieKey),
@@ -139,7 +127,7 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        final View rootView =  inflater.inflate(R.layout.fragment_main, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the GridView, and attach this adapter to it.
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movie_poster);
@@ -149,22 +137,16 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PosterImages posterDetail = (PosterImages) adapter.getItem(position);
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                PosterImages posterImageDetails = new PosterImages(posterDetail.getPoster_path(),posterDetail.getOverview(),posterDetail.getTitle(),posterDetail.getRelease_date(),posterDetail.getVote_average(),posterDetail.getPopularity(),posterDetail.getId());
-                intent.putExtra("posterimages",posterImageDetails);
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                PosterImages posterImageDetails = new PosterImages(posterDetail.getPoster_path(), posterDetail.getOverview(), posterDetail.getTitle(), posterDetail.getRelease_date(), posterDetail.getVote_average(), posterDetail.getPopularity(), posterDetail.getId());
+                intent.putExtra("posterimages", posterImageDetails);
                 startActivity(intent);
-
 
 
             }
         });
         return rootView;
     }
-
-    
-
-
-
 
 
     //background network call in AsyncTask
@@ -173,9 +155,7 @@ public class MainActivityFragment extends Fragment {
         private final String LOG_TAG = FetchPosterTask.class.getSimpleName();
 
 
-
-        private ArrayList<PosterImages> getPosterFromJson(String posterJsonStr) throws JSONException
-        {
+        private ArrayList<PosterImages> getPosterFromJson(String posterJsonStr) throws JSONException {
             final String MDB_RESULTS = "results";
             final String MDB_POSTER_PATH = "poster_path";
             final String MDB_OVERVIEW = "overview";
@@ -186,21 +166,19 @@ public class MainActivityFragment extends Fragment {
             final String MDB_ID = "id";
             JSONObject posterJson = new JSONObject(posterJsonStr);
             JSONArray movieArray = posterJson.getJSONArray(MDB_RESULTS);
-            for(int i=0; i<movieArray.length();i++)
-            {
+            for (int i = 0; i < movieArray.length(); i++) {
                 JSONObject posterPathObject = movieArray.getJSONObject(i);
-                String postersName =  "http://image.tmdb.org/t/p/w185/"+posterPathObject.getString(MDB_POSTER_PATH);
+                String postersName = "http://image.tmdb.org/t/p/w185/" + posterPathObject.getString(MDB_POSTER_PATH);
                 String overView = posterPathObject.getString(MDB_OVERVIEW);
                 String posterTitle = posterPathObject.getString(MDB_TITLE);
                 String releaseDate = posterPathObject.getString(MDB_RELEASE_DATE);
                 String userRating = posterPathObject.getString(MDB_USER_RATING);
                 String popularity = posterPathObject.getString(MDB_POPULARITY);
                 String id = posterPathObject.getString(MDB_ID);
-                posterImagesArrayList.add(new PosterImages(postersName,overView,posterTitle,releaseDate,userRating,popularity,id));
+                posterImagesArrayList.add(new PosterImages(postersName, overView, posterTitle, releaseDate, userRating, popularity, id));
             }
             return posterImagesArrayList;
         }
-
 
 
         @Override
@@ -210,18 +188,19 @@ public class MainActivityFragment extends Fragment {
                 return null;
 
             }
-            
+
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String sort = pref.getString(getString(R.string.movieKey),getString(R.string.defaultValue));
-            switch (sort)
-            {
-                case "0": sort = "popularity";
+            String sort = pref.getString(getString(R.string.movieKey), getString(R.string.defaultValue));
+            switch (sort) {
+                case "0":
+                    sort = "popularity";
                     break;
-                case "1": sort = "top_rated";
+                case "1":
+                    sort = "top_rated";
                     break;
             }
 
-          
+
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String posterJsonStr = null;
@@ -284,15 +263,13 @@ public class MainActivityFragment extends Fragment {
             }
 
 
-
-
             return null;
         }
 
         //Update UI in OnPostExecute
 
         @Override
-        protected void onPostExecute(ArrayList<PosterImages>result) {
+        protected void onPostExecute(ArrayList<PosterImages> result) {
 
 
             adapter.updateData(result);
