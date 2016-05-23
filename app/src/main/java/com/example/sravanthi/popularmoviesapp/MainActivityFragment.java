@@ -3,6 +3,8 @@ package com.example.sravanthi.popularmoviesapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -16,6 +18,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -139,7 +151,7 @@ public class MainActivityFragment extends Fragment {
 
     //background network call in AsyncTask
 
-   /* public class FetchPosterTask extends AsyncTask<String, Void, ArrayList<PosterImages>> {
+    public class FetchPosterTask extends AsyncTask<String, Void, ArrayList<PosterImages>> {
         private final String LOG_TAG = FetchPosterTask.class.getSimpleName();
 
 
@@ -265,5 +277,5 @@ public class MainActivityFragment extends Fragment {
             adapter.updateData(result);
 
         }
-    }*/
+    }
 }
